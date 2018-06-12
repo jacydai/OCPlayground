@@ -24,6 +24,10 @@
 		2A2B3F5E2086DB3A00FCC23C /* EffectiveObjective_CTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B3F5D2086DB3A00FCC23C /* EffectiveObjective_CTests.m */; };
 		2A2B3F692086DB3A00FCC23C /* EffectiveObjective_CUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B3F682086DB3A00FCC23C /* EffectiveObjective_CUITests.m */; };
 		2A2B3F7B2086E3EC00FCC23C /* EOCPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B3F7A2086E3EC00FCC23C /* EOCPerson.m */; };
+		2A2B3F7E2089CC6000FCC23C /* KJD__SpamCodeMix.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B3F7D2089CC6000FCC23C /* KJD__SpamCodeMix.m */; };
+		2A2B3F812089ED5100FCC23C /* KJD__SpamCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B3F802089ED5100FCC23C /* KJD__SpamCodeGenerator.m */; };
+		2A2B3F84208E14F600FCC23C /* KJD__FilterFileDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B3F83208E14F600FCC23C /* KJD__FilterFileDirectory.m */; };
+		2A38F2B720B4101200F0CB17 /* KJD__MixFileName.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A38F2B620B4101200F0CB17 /* KJD__MixFileName.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +96,14 @@
 		2A2B3F6A2086DB3A00FCC23C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2A2B3F792086E3EC00FCC23C /* EOCPerson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EOCPerson.h; sourceTree = "<group>"; };
 		2A2B3F7A2086E3EC00FCC23C /* EOCPerson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EOCPerson.m; sourceTree = "<group>"; };
+		2A2B3F7C2089CC6000FCC23C /* KJD__SpamCodeMix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KJD__SpamCodeMix.h; sourceTree = "<group>"; };
+		2A2B3F7D2089CC6000FCC23C /* KJD__SpamCodeMix.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KJD__SpamCodeMix.m; sourceTree = "<group>"; };
+		2A2B3F7F2089ED5100FCC23C /* KJD__SpamCodeGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KJD__SpamCodeGenerator.h; sourceTree = "<group>"; };
+		2A2B3F802089ED5100FCC23C /* KJD__SpamCodeGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KJD__SpamCodeGenerator.m; sourceTree = "<group>"; };
+		2A2B3F82208E14F600FCC23C /* KJD__FilterFileDirectory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KJD__FilterFileDirectory.h; sourceTree = "<group>"; };
+		2A2B3F83208E14F600FCC23C /* KJD__FilterFileDirectory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KJD__FilterFileDirectory.m; sourceTree = "<group>"; };
+		2A38F2B520B4101200F0CB17 /* KJD__MixFileName.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KJD__MixFileName.h; sourceTree = "<group>"; };
+		2A38F2B620B4101200F0CB17 /* KJD__MixFileName.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KJD__MixFileName.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +185,14 @@
 				2A2B3F0D2086D93800FCC23C /* AppDelegate.m */,
 				2A2B3F0F2086D93800FCC23C /* ViewController.h */,
 				2A2B3F102086D93800FCC23C /* ViewController.m */,
+				2A38F2B520B4101200F0CB17 /* KJD__MixFileName.h */,
+				2A38F2B620B4101200F0CB17 /* KJD__MixFileName.m */,
+				2A2B3F82208E14F600FCC23C /* KJD__FilterFileDirectory.h */,
+				2A2B3F83208E14F600FCC23C /* KJD__FilterFileDirectory.m */,
+				2A2B3F7C2089CC6000FCC23C /* KJD__SpamCodeMix.h */,
+				2A2B3F7D2089CC6000FCC23C /* KJD__SpamCodeMix.m */,
+				2A2B3F7F2089ED5100FCC23C /* KJD__SpamCodeGenerator.h */,
+				2A2B3F802089ED5100FCC23C /* KJD__SpamCodeGenerator.m */,
 				2A2B3F122086D93800FCC23C /* Main.storyboard */,
 				2A2B3F152086D93800FCC23C /* Assets.xcassets */,
 				2A2B3F172086D93800FCC23C /* LaunchScreen.storyboard */,
@@ -471,8 +491,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A2B3F812089ED5100FCC23C /* KJD__SpamCodeGenerator.m in Sources */,
+				2A2B3F84208E14F600FCC23C /* KJD__FilterFileDirectory.m in Sources */,
 				2A2B3F112086D93800FCC23C /* ViewController.m in Sources */,
 				2A2B3F1C2086D93800FCC23C /* main.m in Sources */,
+				2A38F2B720B4101200F0CB17 /* KJD__MixFileName.m in Sources */,
+				2A2B3F7E2089CC6000FCC23C /* KJD__SpamCodeMix.m in Sources */,
 				2A2B3F0E2086D93800FCC23C /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -629,7 +653,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -678,7 +702,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -691,6 +715,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = OCPlayground/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nextStep.OCPlayground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -704,6 +729,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = OCPlayground/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nextStep.OCPlayground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
