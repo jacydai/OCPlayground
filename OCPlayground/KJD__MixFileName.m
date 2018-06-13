@@ -8,8 +8,12 @@
 
 #import "KJD__MixFileName.h"
 
-static NSString *kRevertedFileLog = @"RevertedFileNameLog2.plist";
+static NSString *kRevertedFileLog = @"RevertedFileNameLog.plist";
 static NSString *kFileNameLog     = @"FileNameLog2.plist";
+
+static NSString *kOriginalNameLog = @"FileNameLog_Original.plist";
+static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
+
 @interface KJD__MixFileName ()
 
 @property (nonatomic, copy) NSString         *filePath;
@@ -43,6 +47,7 @@ static NSString *kFileNameLog     = @"FileNameLog2.plist";
 //        [self createLocalRevertedFileLog];
 //    }
 
+    [self createLocalRevertedFileLog]; // 首先做本地键值对的替换
     [self matchLocalFile:self.filePath];
 
     [self deleteUnusedFiles:self.filePath];
@@ -93,22 +98,23 @@ static NSString *kFileNameLog     = @"FileNameLog2.plist";
      BOOL needReplacName = [self needReplaceFile:file];
     NSString *newFileName;
     if (needReplacName) {
+        NSString *logFileName = [self revertFileName:oldFileName];
+        BOOL fileType = [logFileName containsString:@"KJD"] && (![logFileName containsString:@"KJD__"]);
+//        if (logFileName.length <= 0 && [logFileName hasPrefix:@"KJD__"]) {
+//            return;
 
-        newFileName = [self returnMixFileName:file];
+        if (logFileName.length > 0 && fileType) {
+            newFileName = logFileName;
+
+        } else {
+
+            newFileName = [self returnMixFileName:file];
+        }
+
     } else {
 
         newFileName = file;
     }
-
-    // 做一下相关的名称替换,主要是替换到原来的数据
-//    if (self.revertName) {
-//
-//        NSString *logFileName = [self revertFileName:oldFileName];
-//        if (logFileName.length <= 0 && ![logFileName hasPrefix:@"KJD__"]) {
-//            return;
-//        }
-//        newFileName = logFileName;
-//    }
 
     NSString *oldFilePath = filePath;
 
@@ -311,7 +317,7 @@ static NSString *kFileNameLog     = @"FileNameLog2.plist";
 - (NSString *)revertFileName:(NSString *)fileName {
 
     NSString *innerName = [self fileNameRemoveFileExtension:fileName];
-    NSString *path = [self.filePath stringByAppendingPathComponent:kRevertedFileLog];
+    NSString *path = [self.filePath stringByAppendingPathComponent:kOriginalNameLog];
     NSArray *originalArray = [NSArray arrayWithContentsOfFile:path];
     NSMutableArray *namesArray = [NSMutableArray array];
     [namesArray addObjectsFromArray:originalArray];
@@ -324,7 +330,8 @@ static NSString *kFileNameLog     = @"FileNameLog2.plist";
     for (NSDictionary *dict in namesArray) {
         NSArray *allKeys = dict.allKeys;
         NSString *key = allKeys[0];
-        if ([innerName containsString:key]) {
+        NSString *keyStr = [self fileNameRemoveFileExtension:key];
+        if ([innerName containsString:keyStr]) {
 
             oldFileName = dict[key];
             break;
@@ -357,14 +364,14 @@ static NSString *kFileNameLog     = @"FileNameLog2.plist";
     return validStr;
 }
 
-//- (void)createLocalRevertedFileLog {
-//
+- (void)createLocalRevertedFileLog {
+
 //    if ([self localLogFileExist:kRevertedFileLog]) {
 //        return;
 //    }
-//
-//    [self revertFileNameLog];
-//}
+
+    [self revertFileNameLog];
+}
 
 
 //- (BOOL)localLogFileExist:(NSString *)localFileName {
@@ -379,43 +386,43 @@ static NSString *kFileNameLog     = @"FileNameLog2.plist";
 //    return fileExist && revertArray.count > 0;
 //}
 
-//// 对本地的log表先做一次值的替换
-//- (void)revertFileNameLog {
-//
-//    NSString *revertPath = [self.filePath stringByAppendingPathComponent:kRevertedFileLog];
-//    NSArray *revertArray = [NSArray arrayWithContentsOfFile:revertPath];
-//    NSMutableArray *revertNamesArray = [NSMutableArray array];
-//    [revertNamesArray addObjectsFromArray:revertArray];
-//
-//    NSString *path = [self.filePath stringByAppendingPathComponent:kFileNameLog];
-//    NSArray *originalArray = [NSArray arrayWithContentsOfFile:path];
-//    NSMutableArray *namesArray = [NSMutableArray array];
-//    [namesArray addObjectsFromArray:originalArray];
-//
-//    for (NSDictionary *originalDict in namesArray) {
-//
-//        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-//        // 考虑到此处只有一个key，对应一个value
-//        NSArray *allKeys = originalDict.allKeys;
-//        NSArray *allValues = originalDict.allValues;
-//        NSString *key = allKeys[0];
-//        NSString *vlaue = allValues[0];
-//        if ([vlaue isKindOfClass:[NSString class]] && [vlaue isKindOfClass:[NSString class]]) {
-//
-//            dict[vlaue] = key;
-//
-//            BOOL existObj = [revertNamesArray containsObject:dict];
-//
-//            // 如果不存在该文件，则直接插入
-//            if (!existObj) {
-//                [revertNamesArray addObject:dict];
-//            }
-//        }
-//    }
-//
-//    [revertNamesArray writeToFile:revertPath atomically:YES];
-//
-//    // 写完文档后，需要删除FileNameLog 文档
+// 对本地的log表先做一次值的替换
+- (void)revertFileNameLog {
+
+    NSString *revertPath = [self.filePath stringByAppendingPathComponent:kOriginalNameLog];
+    NSArray *revertArray = [NSArray arrayWithContentsOfFile:revertPath];
+    NSMutableArray *revertNamesArray = [NSMutableArray array];
+    [revertNamesArray addObjectsFromArray:revertArray];
+
+    NSString *path = [self.filePath stringByAppendingPathComponent:kRevertedFileLog];
+    NSArray *originalArray = [NSArray arrayWithContentsOfFile:path];
+    NSMutableArray *namesArray = [NSMutableArray array];
+    [namesArray addObjectsFromArray:originalArray];
+
+    for (NSDictionary *originalDict in namesArray) {
+
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        // 考虑到此处只有一个key，对应一个value
+        NSArray *allKeys = originalDict.allKeys;
+        NSArray *allValues = originalDict.allValues;
+        NSString *key = allKeys[0];
+        NSString *vlaue = allValues[0];
+        if ([vlaue isKindOfClass:[NSString class]] && [vlaue isKindOfClass:[NSString class]]) {
+
+            dict[vlaue] = key;
+
+            BOOL existObj = [revertNamesArray containsObject:dict];
+
+            // 如果不存在该文件，则直接插入
+            if (!existObj) {
+                [revertNamesArray addObject:dict];
+            }
+        }
+    }
+
+    [revertNamesArray writeToFile:revertPath atomically:YES];
+
+    // 写完文档后，需要删除FileNameLog 文档
 //    NSError *error;
 //    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
 //
@@ -425,7 +432,7 @@ static NSString *kFileNameLog     = @"FileNameLog2.plist";
 //
 //        NSLog(@"\n删除FileNameLog.plist 成功\n");
 //    }
-//}
+}
 
 
 #pragma mark - 替换文件名称的条件
