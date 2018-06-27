@@ -187,12 +187,7 @@
 				2A2B3F102086D93800FCC23C /* ViewController.m */,
 				2A38F2B520B4101200F0CB17 /* KJD__MixFileName.h */,
 				2A38F2B620B4101200F0CB17 /* KJD__MixFileName.m */,
-				2A2B3F82208E14F600FCC23C /* KJD__FilterFileDirectory.h */,
-				2A2B3F83208E14F600FCC23C /* KJD__FilterFileDirectory.m */,
-				2A2B3F7C2089CC6000FCC23C /* KJD__SpamCodeMix.h */,
-				2A2B3F7D2089CC6000FCC23C /* KJD__SpamCodeMix.m */,
-				2A2B3F7F2089ED5100FCC23C /* KJD__SpamCodeGenerator.h */,
-				2A2B3F802089ED5100FCC23C /* KJD__SpamCodeGenerator.m */,
+				2AE473C720E22153007C6B57 /* Spam */,
 				2A2B3F122086D93800FCC23C /* Main.storyboard */,
 				2A2B3F152086D93800FCC23C /* Assets.xcassets */,
 				2A2B3F172086D93800FCC23C /* LaunchScreen.storyboard */,
@@ -262,6 +257,19 @@
 				2A2B3F7A2086E3EC00FCC23C /* EOCPerson.m */,
 			);
 			path = "22-NSCopying";
+			sourceTree = "<group>";
+		};
+		2AE473C720E22153007C6B57 /* Spam */ = {
+			isa = PBXGroup;
+			children = (
+				2A2B3F7C2089CC6000FCC23C /* KJD__SpamCodeMix.h */,
+				2A2B3F7D2089CC6000FCC23C /* KJD__SpamCodeMix.m */,
+				2A2B3F82208E14F600FCC23C /* KJD__FilterFileDirectory.h */,
+				2A2B3F83208E14F600FCC23C /* KJD__FilterFileDirectory.m */,
+				2A2B3F7F2089ED5100FCC23C /* KJD__SpamCodeGenerator.h */,
+				2A2B3F802089ED5100FCC23C /* KJD__SpamCodeGenerator.m */,
+			);
+			path = Spam;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

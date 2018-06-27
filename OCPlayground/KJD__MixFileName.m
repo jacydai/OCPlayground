@@ -8,48 +8,50 @@
 
 #import "KJD__MixFileName.h"
 
-static NSString *kRevertedFileLog = @"RevertedFileNameLog.plist";
-static NSString *kFileNameLog     = @"FileNameLog2.plist";
 
 static NSString *kOriginalNameLog = @"FileNameLog_Original.plist";
 static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
 
 @interface KJD__MixFileName ()
 
+// 文件路径
 @property (nonatomic, copy) NSString         *filePath;
 @property (nonatomic, strong) NSFileManager  *fileManager;
 
+// 当前文件路径
 @property (nonatomic, copy) NSString         *currentFilePath;
 
-@property (nonatomic, assign) BOOL            revertName;
+//
+@property (nonatomic, assign) BOOL            restore;
 
 @end
 
 @implementation KJD__MixFileName
 
 
-+ (void)mixFileName:(NSString *)fileDirectory revert:(BOOL)revert {
++ (void)mixFileName:(NSString *)fileDirectory restore:(BOOL)restore {
 
     KJD__MixFileName *fileName = [[KJD__MixFileName alloc] init];
-
     fileName.filePath = fileDirectory;
     fileName.currentFilePath = nil;
-//    fileName.revertName = revert;
+    fileName.restore = restore;
     fileName.fileManager = [NSFileManager defaultManager];
+
     [fileName findValidateFile];
 }
 
 #pragma mark - 查找文件名称
 - (void)findValidateFile {
 
-//    // 判断本地是否有RevertFileLog 文件
-//    if (self.revertName) {
-//        [self createLocalRevertedFileLog];
-//    }
+    // 判断本地是否有RevertFileLog 文件
+    if (self.restore) {
+        [self createLocalRevertedFileLog];
+    }
 
-    [self createLocalRevertedFileLog]; // 首先做本地键值对的替换
+    // 匹配本地文件
     [self matchLocalFile:self.filePath];
 
+    // 删除混淆后生成的冗余文件
     [self deleteUnusedFiles:self.filePath];
 }
 
@@ -58,14 +60,13 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
 
     NSError *error;
     NSArray *files = [self.fileManager contentsOfDirectoryAtPath:path error:&error];
-
     if (error) {
         NSLog(@"\n\nOpen File Error:%@\n\n",error);
         return;
     }
+    
     // 遍历文件
     for (NSString *file in files) {
-
         // 文件路径
         NSString *filePath = [path stringByAppendingPathComponent:file];
         // 文件夹
@@ -92,70 +93,71 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
 // 替换文件名称
 - (void)replaceCurrentFileName:(NSString *)file filePath:(NSString *)filePath {
 
+    BOOL hTypeFile = [filePath.pathExtension isEqualToString:@"h"];
+    if (!hTypeFile) {
+        return;
+    }
+
     NSString *oldFileName = file;
+    NSString *newFileName;
 
     // 生成新名字，需要对已生成过的文件做过滤
-     BOOL needReplacName = [self needReplaceFile:file];
-    NSString *newFileName;
-    if (needReplacName) {
-        NSString *logFileName = [self revertFileName:oldFileName];
+    BOOL needReplacName = [self needReplaceFile:file];
+    // 加密
+    if (needReplacName && !self.restore) {
+        NSString *logFileName = [self findSavedLogFileName:oldFileName];
         BOOL fileType = [logFileName containsString:@"KJD"] && (![logFileName containsString:@"KJD__"]);
-//        if (logFileName.length <= 0 && [logFileName hasPrefix:@"KJD__"]) {
-//            return;
-
         if (logFileName.length > 0 && fileType) {
             newFileName = logFileName;
-
         } else {
-
+            // 本地找不到，则生成新的混淆串
             newFileName = [self returnMixFileName:file];
         }
 
+    } else if (self.restore) {
+        // 还原
+        NSString *logFileName = [self findSavedLogFileName:oldFileName];
+        BOOL fileType = ([logFileName containsString:@"KJD__"]);
+        if (logFileName.length > 0 &&fileType) {
+
+            newFileName = logFileName;
+        } else {
+            //  还原找不到文件，直接返回
+            return;
+        }
     } else {
-
-        newFileName = file;
-    }
-
-    NSString *oldFilePath = filePath;
-
-    // 对于delegate 等文件只替换内容
-    if ([self onlyReplaceReferenceFileName:file]) {
+        // 其他，直接返回
         return;
     }
 
     // 修改文件名称 对修改过的文件名，不能重新命名
-    // 找到对应的 .h .m 文件
-    if ([oldFilePath.pathExtension isEqualToString:@"h"] && oldFileName != newFileName) {
+    NSString *oldFilePath = filePath;
+    if (hTypeFile && oldFileName != newFileName) {
 
         NSString *newFilePath = [filePath stringByReplacingOccurrencesOfString:oldFileName withString:newFileName];
-        NSString *newPath = [NSString stringWithFormat:@"%@.%@",newFilePath,oldFilePath.pathExtension];
+        NSString *hNewPath = [NSString stringWithFormat:@"%@.%@",newFilePath,oldFilePath.pathExtension];
 
         NSString *mOldPath = [oldFilePath stringByReplacingOccurrencesOfString:@".h" withString:@".m"];
         NSString *mNewFilePath = [newFilePath stringByReplacingOccurrencesOfString:@".h" withString:@".m"];
         NSString *mNewPath = [NSString stringWithFormat:@"%@.%@",mNewFilePath,mOldPath.pathExtension];
 
         // 对.m .h 文件重命名
-        NSString *oldName = [self fileNameRemoveFileExtension:oldFileName];
-        [self saveFileNameLog:oldFileName newFileName:newFileName];
-        [self reNameCurrentFileName:oldFilePath newFileName:newPath];
+        [self reNameCurrentFileName:oldFilePath newFileName:hNewPath];
         [self reNameCurrentFileName:mOldPath newFileName:mNewPath];
+
+        NSString *oldName = [self fileNameRemoveFileExtension:oldFileName];
+        NSString *newName = [self fileNameRemoveFileExtension:newFileName];
+        // 保存本地记录
+        [self saveFileNameLog:oldName newFileName:newName]; // 记录替换日志
+        // 全局查找
+        [self globalReplaceFileContentOldFileName:oldName newFileName:newName];
     }
-
-    NSString *oldName = [oldFileName stringByReplacingOccurrencesOfString:@".h" withString:@""];
-    oldName = [oldName stringByReplacingOccurrencesOfString:@".m" withString:@""];
-
-    NSString *newName = [newFileName stringByReplacingOccurrencesOfString:@".h" withString:@""];
-    newName = [newName stringByReplacingOccurrencesOfString:@".m" withString:@""];
-//    NSString *oldName = [self fileNameRemoveFileExtension:oldFileName];
-//    NSString *newName = [self fileNameRemoveFileExtension:newFileName];
-    [self globalReplaceFileContentOldFileName:oldName newFileName:newName];
 }
 
 // 全局替换文件名称
 - (void)globalReplaceFileContentOldFileName:(NSString *)oldFileName newFileName:(NSString *)newFileName {
 
     NSError *error;
-
     NSString *path = self.currentFilePath ? self.currentFilePath : self.filePath;
     NSArray *files = [self.fileManager contentsOfDirectoryAtPath:path error:&error];
     // 遍历文件
@@ -179,10 +181,9 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
 
                 NSLog(@"pbxproj %@",fileName);
             }
-            BOOL fileType = [fileExtentsion isEqualToString:@"h"]|| [fileExtentsion isEqualToString:@"m"] ||[fileExtentsion isEqualToString:@"pbxproj"];
+            BOOL fileType = [fileExtentsion isEqualToString:@"h"] || [fileExtentsion isEqualToString:@"m"] || [fileExtentsion isEqualToString:@"pbxproj"];
             if (fileType) {
 
-                NSLog(@"\n++++++++ \n fileName: %@ \n oldName:%@  \nnewName:%@\n +++++++++\n\n",fileName,oldFileName,newFileName);
                 NSError *error = nil;
                 NSMutableString *contentString = [NSMutableString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&error];
                 if (error) {
@@ -191,6 +192,10 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
                 }
 
                 if ([contentString containsString:oldFileName]) {
+
+
+                    NSLog(@"\n++++++++ \n fileName: %@ \n oldName:%@  \nnewName:%@\n +++++++++\n\n",fileName,oldFileName,newFileName);
+
                     NSRange range = NSMakeRange(0, contentString.length);
                     NSInteger count = [contentString replaceOccurrencesOfString:oldFileName withString:newFileName options:NSCaseInsensitiveSearch range:range];
 
@@ -271,9 +276,7 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
                     break;
                 }
             }
-
         }
-
     }
 
     return reference;
@@ -295,15 +298,23 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
 
 - (void)saveFileNameLog:(NSString *)fileName newFileName:(NSString *)newFileName {
 
-    NSString *path = [self.filePath stringByAppendingPathComponent:kFileNameLog];
+    NSString *path;
+    if (self.restore) {
 
-    NSArray *originalArray = [NSArray arrayWithContentsOfFile:path];
+        path = [self.filePath stringByAppendingPathComponent:kRevertedNameLog];
+    } else {
+
+        path = [self.filePath stringByAppendingPathComponent:kOriginalNameLog];
+    }
+
+    NSArray *savedArray = [NSArray arrayWithContentsOfFile:path];
 
     NSMutableArray *namesArray = [NSMutableArray array];
-    [namesArray addObjectsFromArray:originalArray];
+    [namesArray addObjectsFromArray:savedArray];
 
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    dict[fileName] = newFileName;
+    NSString *fileNameStr = [self fileNameRemoveFileExtension:fileName];
+    dict[fileNameStr] = newFileName;
 
     BOOL existObj = [namesArray containsObject:dict];
 
@@ -314,24 +325,31 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
     }
 }
 
-- (NSString *)revertFileName:(NSString *)fileName {
+- (NSString *)findSavedLogFileName:(NSString *)fileName {
+
+    NSString *path;
+    if (self.restore) {
+
+        path = [self.filePath stringByAppendingPathComponent:kRevertedNameLog];
+    } else {
+
+        path = [self.filePath stringByAppendingPathComponent:kOriginalNameLog];
+    }
 
     NSString *innerName = [self fileNameRemoveFileExtension:fileName];
-    NSString *path = [self.filePath stringByAppendingPathComponent:kOriginalNameLog];
-    NSArray *originalArray = [NSArray arrayWithContentsOfFile:path];
+    NSArray *currentSavedArray = [NSArray arrayWithContentsOfFile:path];
     NSMutableArray *namesArray = [NSMutableArray array];
-    [namesArray addObjectsFromArray:originalArray];
+    [namesArray addObjectsFromArray:currentSavedArray];
 
     if (innerName.length <=0) {
         return nil;
     }
-    // TODO： 可能会有为空的情况
+
     NSString *oldFileName;
     for (NSDictionary *dict in namesArray) {
         NSArray *allKeys = dict.allKeys;
         NSString *key = allKeys[0];
-        NSString *keyStr = [self fileNameRemoveFileExtension:key];
-        if ([innerName containsString:keyStr]) {
+        if ([innerName containsString:key]) {
 
             oldFileName = dict[key];
             break;
@@ -364,37 +382,20 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
     return validStr;
 }
 
+// 对本地的log表先做一次值的替换
 - (void)createLocalRevertedFileLog {
-
-//    if ([self localLogFileExist:kRevertedFileLog]) {
-//        return;
-//    }
 
     [self revertFileNameLog];
 }
 
-
-//- (BOOL)localLogFileExist:(NSString *)localFileName {
-//
-//    NSFileManager *fm = [NSFileManager defaultManager];
-//    NSString *revertPath = [self.filePath stringByAppendingPathComponent:localFileName];
-//
-//    NSArray *revertArray = [NSArray arrayWithContentsOfFile:revertPath];
-//
-//    BOOL fileExist =[fm fileExistsAtPath:revertPath];
-//
-//    return fileExist && revertArray.count > 0;
-//}
-
-// 对本地的log表先做一次值的替换
 - (void)revertFileNameLog {
 
-    NSString *revertPath = [self.filePath stringByAppendingPathComponent:kOriginalNameLog];
+    NSString *revertPath = [self.filePath stringByAppendingPathComponent:kRevertedNameLog];
     NSArray *revertArray = [NSArray arrayWithContentsOfFile:revertPath];
     NSMutableArray *revertNamesArray = [NSMutableArray array];
     [revertNamesArray addObjectsFromArray:revertArray];
 
-    NSString *path = [self.filePath stringByAppendingPathComponent:kRevertedFileLog];
+    NSString *path = [self.filePath stringByAppendingPathComponent:kOriginalNameLog];
     NSArray *originalArray = [NSArray arrayWithContentsOfFile:path];
     NSMutableArray *namesArray = [NSMutableArray array];
     [namesArray addObjectsFromArray:originalArray];
@@ -421,19 +422,7 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
     }
 
     [revertNamesArray writeToFile:revertPath atomically:YES];
-
-    // 写完文档后，需要删除FileNameLog 文档
-//    NSError *error;
-//    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
-//
-//    if (error) {
-//        NSLog(@"\n\n删除FileNameLog.plist 失败：%@\n\n",error);
-//    } else {
-//
-//        NSLog(@"\n删除FileNameLog.plist 成功\n");
-//    }
 }
-
 
 #pragma mark - 替换文件名称的条件
 
@@ -520,8 +509,13 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
     NSString *fileExtentsion = filePath.pathExtension;
     BOOL fileType = [fileExtentsion isEqualToString:@"h"] || [fileExtentsion isEqualToString:@"m"];
 
-//    NSString *prefix = self.revertName ? @"KJD" : @"KJD__";
-    BOOL markFile = [file containsString:@"KJD__"];
+    BOOL markFile = NO;
+    if (self.restore) {
+
+        markFile = (![file containsString:@"KJD__"]) && [file hasPrefix:@"KJD"];
+    } else {
+        markFile = [file containsString:@"KJD__"];
+    }
 
     return fileType && markFile;
 }
@@ -545,24 +539,6 @@ static NSString *kRevertedNameLog = @"FileNameLog_Reverted.plist";
 
 
     return ignore;
-}
-
-- (BOOL)onlyReplaceReferenceFileName:(NSString *)file {
-
-    NSArray *fileArray = @[
-                           @"AppDelegate",
-                           @"main.m",
-                           @".pch",
-                           @".pbxproj",
-                           @"CookieHelper",
-                           @"DatabaseUtil",
-                           @"Environment",
-                           @"NavigationBaseView",
-                           @"NavigationSetting",
-                           ];
-
-   BOOL replaceReference = [fileArray containsObject:file];
-    return replaceReference;
 }
 
 // 当前文件是否是文件夹

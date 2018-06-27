@@ -10,6 +10,13 @@
 
 @interface KJD__MixFileName : NSObject
 
-+ (void)mixFileName:(NSString *)fileDirectory revert:(BOOL)revert;
+
+/**
+ 混淆文件名
+
+ @param fileDirectory 需要混淆的文件夹
+ @param restore       是否是从混淆后的文件还原 默认为0
+ */
++ (void)mixFileName:(NSString *)fileDirectory restore:(BOOL)restore;
 
 @end

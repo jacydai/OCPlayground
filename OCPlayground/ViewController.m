@@ -22,8 +22,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    NSString *filePath = @"";
-    [KJD__MixFileName mixFileName:filePath revert:NO];
+    NSString *filePath = @"/Users/xxx/temp/note2";
+    [KJD__MixFileName mixFileName:filePath restore:YES];
 }
 
 - (NSString *)generatorRandomString {
