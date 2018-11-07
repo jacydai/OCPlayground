@@ -28,6 +28,8 @@
 		2A2B3F812089ED5100FCC23C /* KJD__SpamCodeGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B3F802089ED5100FCC23C /* KJD__SpamCodeGenerator.m */; };
 		2A2B3F84208E14F600FCC23C /* KJD__FilterFileDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A2B3F83208E14F600FCC23C /* KJD__FilterFileDirectory.m */; };
 		2A38F2B720B4101200F0CB17 /* KJD__MixFileName.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A38F2B620B4101200F0CB17 /* KJD__MixFileName.m */; };
+		2A7E31A9219026AE00CBA96D /* province_data.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2A7E31A8219026AD00CBA96D /* province_data.xml */; };
+		2A80B9EE2191C7E000BBC861 /* SJDRegionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A80B9ED2191C7E000BBC861 /* SJDRegionData.m */; };
 		2ACBA089213CD9F100967B2E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ACBA088213CD9F100967B2E /* AppDelegate.m */; };
 		2ACBA08C213CD9F100967B2E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ACBA08B213CD9F100967B2E /* ViewController.m */; };
 		2ACBA08F213CD9F100967B2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2ACBA08D213CD9F100967B2E /* Main.storyboard */; };
@@ -135,6 +137,9 @@
 		2A2B3F83208E14F600FCC23C /* KJD__FilterFileDirectory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KJD__FilterFileDirectory.m; sourceTree = "<group>"; };
 		2A38F2B520B4101200F0CB17 /* KJD__MixFileName.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KJD__MixFileName.h; sourceTree = "<group>"; };
 		2A38F2B620B4101200F0CB17 /* KJD__MixFileName.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KJD__MixFileName.m; sourceTree = "<group>"; };
+		2A7E31A8219026AD00CBA96D /* province_data.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = province_data.xml; sourceTree = "<group>"; };
+		2A80B9EC2191C7E000BBC861 /* SJDRegionData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SJDRegionData.h; sourceTree = "<group>"; };
+		2A80B9ED2191C7E000BBC861 /* SJDRegionData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SJDRegionData.m; sourceTree = "<group>"; };
 		2ACBA085213CD9F100967B2E /* JADWebKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JADWebKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ACBA087213CD9F100967B2E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2ACBA088213CD9F100967B2E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -291,10 +296,13 @@
 		2A2B3F0B2086D93800FCC23C /* OCPlayground */ = {
 			isa = PBXGroup;
 			children = (
+				2A7E31A8219026AD00CBA96D /* province_data.xml */,
 				2A2B3F0C2086D93800FCC23C /* AppDelegate.h */,
 				2A2B3F0D2086D93800FCC23C /* AppDelegate.m */,
 				2A2B3F0F2086D93800FCC23C /* ViewController.h */,
 				2A2B3F102086D93800FCC23C /* ViewController.m */,
+				2A80B9EC2191C7E000BBC861 /* SJDRegionData.h */,
+				2A80B9ED2191C7E000BBC861 /* SJDRegionData.m */,
 				2A38F2B520B4101200F0CB17 /* KJD__MixFileName.h */,
 				2A38F2B620B4101200F0CB17 /* KJD__MixFileName.m */,
 				2AE473C720E22153007C6B57 /* Spam */,
@@ -690,6 +698,7 @@
 				2A2B3F192086D93800FCC23C /* LaunchScreen.storyboard in Resources */,
 				2A2B3F162086D93800FCC23C /* Assets.xcassets in Resources */,
 				2A2B3F142086D93800FCC23C /* Main.storyboard in Resources */,
+				2A7E31A9219026AE00CBA96D /* province_data.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -874,6 +883,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2A2B3F812089ED5100FCC23C /* KJD__SpamCodeGenerator.m in Sources */,
+				2A80B9EE2191C7E000BBC861 /* SJDRegionData.m in Sources */,
 				2A2B3F84208E14F600FCC23C /* KJD__FilterFileDirectory.m in Sources */,
 				2A2B3F112086D93800FCC23C /* ViewController.m in Sources */,
 				2A2B3F1C2086D93800FCC23C /* main.m in Sources */,
